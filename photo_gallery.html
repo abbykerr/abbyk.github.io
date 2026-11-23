@@ -42,8 +42,33 @@
 			}
 
 
+			#lightbox {
+				display: none;                    /* hidden by default */
+				position: fixed;                  /* covers the screen, ignores scrolling */
+				inset: 0;                         /* shorthand for top/right/bottom/left: 0 */
+				background: rgba(0, 0, 0, 0.85);  /* dark see-through backdrop */
+				z-index: 20000;                   /* above Stellar's nav bar (10000) */
+				align-items: center;
+				justify-content: center;
+				cursor: zoom-out;
+			}
+			#lightbox.open {
+				display: flex;                    /* the "open" class makes it visible */
+			}
+			#lightbox img {
+				max-width: 92%;
+				max-height: 92vh;                 /* fits any photo on screen without cropping */
+				border-radius: 8px;
+			}
+			.photo-grid img {
+				cursor: zoom-in;                  /* magnifier cursor tells people it's clickable */
+			}
+
+
 
 		</style>
+		
+	<link rel="icon" type="image/png" href="images/favicon.png" />
 
 
 
@@ -180,6 +205,10 @@
 
 			</div>
 
+			<div id="lightbox">
+				<img id="lightbox-img" alt="" />
+			</div>
+
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/jquery.scrollex.min.js"></script>
@@ -189,5 +218,28 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+			<script>
+				var box = document.getElementById('lightbox');
+				var big = document.getElementById('lightbox-img');
+
+				// give every grid photo a click handler
+				document.querySelectorAll('.photo-grid img').forEach(function (img) {
+					img.addEventListener('click', function () {
+						big.src = img.src;            // copy the clicked photo into the viewer
+						big.alt = img.alt;
+						box.classList.add('open');    // reveals the overlay
+					});
+				});
+
+				// click anywhere on the overlay to close
+				box.addEventListener('click', function () {
+					box.classList.remove('open');
+				});
+
+				// Esc key closes it too
+				document.addEventListener('keydown', function (e) {
+					if (e.key === 'Escape') box.classList.remove('open');
+				});
+			</script>
 	</body>
 </html>
